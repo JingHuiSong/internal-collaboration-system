@@ -39,25 +39,41 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
-
-        if (!user) {
-          return null;
+        // 临时硬编码管理员账号（用于演示）
+        if (credentials.email === "admin@demo.com" && credentials.password === "admin123") {
+          return {
+            id: "demo-admin-id",
+            email: "admin@demo.com",
+            name: "演示管理员",
+            role: "ADMIN",
+          };
         }
 
-        // 简单密码验证（生产环境应使用 bcrypt）
-        if (credentials.password !== user.password) {
+        // 尝试从数据库查找
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email }
+          });
+
+          if (!user) {
+            return null;
+          }
+
+          // 简单密码验证（生产环境应使用 bcrypt）
+          if (credentials.password !== user.password) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("Database error:", error);
           return null;
         }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
       }
     })
   ],
