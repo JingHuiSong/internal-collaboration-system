@@ -1,10 +1,6 @@
 {
-  "buildCommand": "pnpm db:generate && pnpm build",
-  "installCommand": "pnpm install",
-  "env": {
-    "DATABASE_URL": "file:./prisma/prod.db",
-    "NEXTAUTH_URL": "https://your-project.vercel.app",
-    "NEXTAUTH_SECRET": "@nextauth_secret"
-  }
+  "framework": "nextjs",
+  "buildCommand": "prisma generate && next build",
+  "installCommand": "npm install"
 }
 
